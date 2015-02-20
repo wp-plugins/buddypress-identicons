@@ -43,7 +43,7 @@ function bp_identicons_deregister_style() {
 
 = Why is it that some members don't have an identicon? =
 
-An identicon is used as a member's avatar only if a profile photo hasn't been uploaded. After activating the plugin, all new members will be allocated an identicon. Current members will need to log in to get their identicon.
+An identicon is used as a member's avatar only if a profile photo hasn't been uploaded. After activating the plugin, all new members will be allocated an identicon. Existing members will need to log in to get their identicon.
 
 = Where should I submit bug reports? =
 
