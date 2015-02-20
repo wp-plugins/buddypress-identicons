@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BuddyPress Identicons
  * Plugin URI: https://github.com/henrywright/buddypress-identicons
- * Description: Github-style identicons for your BuddyPress site.
+ * Description: GitHub-style identicons for your BuddyPress site.
  * Version: 1.0.0
  * Author: Henry Wright
  * Author URI: http://about.me/henrywright
