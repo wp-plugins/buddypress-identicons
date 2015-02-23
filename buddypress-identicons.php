@@ -3,7 +3,7 @@
  * Plugin Name: BuddyPress Identicons
  * Plugin URI: https://github.com/henrywright/buddypress-identicons
  * Description: GitHub-style identicons for your BuddyPress site.
- * Version: 1.0.1
+ * Version: 1.0.2
  * Author: Henry Wright
  * Author URI: http://about.me/henrywright
  * Text Domain: buddypress-identicons
@@ -66,10 +66,6 @@ final class Identicon {
 
 		// add_action( 'plugins_loaded', array( $this, 'i18n' ) );
 
-		add_action( 'wp_login', array( $this, 'login' ), 10, 2 );
-
-		add_action( 'user_register', array( $this, 'register' ) );
-
 		add_action( 'delete_user', array( $this, 'delete' ) );
 
 		add_action( 'bp_core_deleted_account', array( $this, 'delete' ) );
@@ -89,31 +85,6 @@ final class Identicon {
 	 */
 	function i18n() {
 		load_plugin_textdomain( 'buddypress-identicons', false, $this->plugin_dir . '/languages' );
-	}
-
-	/**
-	 * Calls the method responsible for creating an identicon.
-	 * 
-	 * @since 1.0.0
-	 * @access public
-	 *
-	 * @param string $user_login The user's username.
-	 * @param object $user WP_User object of the logged-in user.
-	 */
-	function login( $user_login, $user ) {
-		self::create( $user->ID );
-	}
-
-	/**
-	 * Calls the method responsible for creating an identicon.
-	 * 
-	 * @since 1.0.0
-	 * @access public
-	 * 
-	 * @param int $user_id The ID of the new user.
-	 */
-	function register( $user_id ) {
-		self::create( $user_id );
 	}
 
 	/**
@@ -313,14 +284,18 @@ final class Identicon {
 	 */
 	function default_avatar_url( $bp_core_avatar_default, $params ) {
 
-		if ( self::has_identicon( $params['item_id'] ) ) {
+		if ( ! self::has_identicon( $params['item_id'] ) ) {
 
-			// Get user info.
-			$user = get_userdata( $params['item_id'] );
-
-			// Point to the identicon.
-			$bp_core_avatar_default = $this->upload_dir['baseurl'] . '/identicons/' . $user->user_login . '.png';
+			// Create an identicon for this user.
+			self::create( $params['item_id'] );
 		}
+
+		// Get user info.
+		$user = get_userdata( $params['item_id'] );
+
+		// Point to the identicon.
+		$bp_core_avatar_default = $this->upload_dir['baseurl'] . '/identicons/' . $user->user_login . '.png';
+
 		return $bp_core_avatar_default;
 	}
 

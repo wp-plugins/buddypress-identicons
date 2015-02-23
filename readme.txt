@@ -4,7 +4,7 @@ Donate link: https://www.bhf.org.uk/get-involved/donate
 Tags: buddypress, identicons, avatars
 Requires at least: 3.2
 Tested up to: 4.1
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -33,7 +33,7 @@ Unfortunately, no.
 
 = Why is it that some members don't have an identicon? =
 
-An identicon is used as a member's avatar only if a profile photo hasn't been uploaded. After activating the plugin, all new members will be allocated an identicon. Existing members will need to log in to get their identicon.
+An identicon is used as a member's avatar only if a profile photo hasn't been uploaded.
 
 = Where should I submit bug reports? =
 
@@ -46,6 +46,9 @@ If you think you've spotted a bug, please let me know by opening an issue on the
 3. This identicon belongs to lorrainewright
 
 == Changelog ==
+
+= 1.0.2 =
+* Perform identicon image generation when bp_core_fetch_avatar() is called instead of at registration and login. Ensures all members have an identicon available.
 
 = 1.0.1 =
 * Made the border intrinsic to the image removing the need for CSS styles.
