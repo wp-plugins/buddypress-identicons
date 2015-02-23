@@ -3,7 +3,7 @@
  * Plugin Name: BuddyPress Identicons
  * Plugin URI: https://github.com/henrywright/buddypress-identicons
  * Description: GitHub-style identicons for your BuddyPress site.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: Henry Wright
  * Author URI: http://about.me/henrywright
  * Text Domain: buddypress-identicons
@@ -66,8 +66,6 @@ final class Identicon {
 
 		// add_action( 'plugins_loaded', array( $this, 'i18n' ) );
 
-		add_action( 'wp_enqueue_scripts', array( $this, 'register_styles' ) );
-
 		add_action( 'wp_login', array( $this, 'login' ), 10, 2 );
 
 		add_action( 'user_register', array( $this, 'register' ) );
@@ -91,17 +89,6 @@ final class Identicon {
 	 */
 	function i18n() {
 		load_plugin_textdomain( 'buddypress-identicons', false, $this->plugin_dir . '/languages' );
-	}
-
-	/**
-	 * Registers and enqueues necessary styles.
-	 *
-	 * @since 1.0.0
-	 * @access public
-	 */
-	function register_styles() {
-		wp_register_style( 'buddypress-identicons', plugins_url( 'buddypress-identicons/css/style.css' ) );
-		wp_enqueue_style( 'buddypress-identicons' );
 	}
 
 	/**
@@ -170,8 +157,8 @@ final class Identicon {
 			}
 		}
 
-		// Create a new image 300px by 300px.
-		$image = imagecreatetruecolor( 300, 300 );
+		// Create a new image 360px by 360px.
+		$image = imagecreatetruecolor( 360, 360 );
 
 		// Break the hex triplet into red, green and blue parts.
 		$r = substr( $hex_triplet, 0, 2 );
@@ -184,6 +171,9 @@ final class Identicon {
 		// Allocate the background colour.
 		$background = imagecolorallocate( $image, '0xee', '0xee', '0xee' );
 
+		// Fill the image with a background colour.
+		imagefill( $image, 0, 0, $background );
+
 		// Paint columns 1 to 3.
 		for ( $x = 0; $x < 3; $x++ ) {
 			for ( $y = 0; $y < 5; $y++ ) {
@@ -192,7 +182,13 @@ final class Identicon {
 				if ( $pixels[$x][$y] )
 					$colour = $pixel;
 
-				imagefilledrectangle( $image, $x * 60, $y * 60, ( $x + 1 ) * 60, ( $y + 1 ) * 60, $colour );
+				// Set the point coordinates.
+				$x1 = 30 + ( $x * 60 );
+				$y1 = 30 + ( $y * 60 );
+				$x2 = 30 + ( ( $x + 1 ) * 60 );
+				$y2 = 30 + ( ( $y + 1 ) * 60 );
+
+				imagefilledrectangle( $image, $x1, $y1, $x2, $y2, $colour );
 			}
 		}
 
@@ -204,7 +200,13 @@ final class Identicon {
 				if ( $pixels[$x - 2][$y] )
 					$colour = $pixel;
 
-				imagefilledrectangle( $image, $x * 60, $y * 60, ( $x + 1 ) * 60, ( $y + 1 ) * 60, $colour );
+				// Set the point coordinates.
+				$x1 = 30 + ( $x * 60 );
+				$y1 = 30 + ( $y * 60 );
+				$x2 = 30 + ( ( $x + 1 ) * 60 );
+				$y2 = 30 + ( ( $y + 1 ) * 60 );
+
+				imagefilledrectangle( $image, $x1, $y1, $x2, $y2, $colour );
 			}
 		}
 
@@ -216,7 +218,13 @@ final class Identicon {
 				if ( $pixels[$x - 4][$y] )
 					$colour = $pixel;
 
-				imagefilledrectangle( $image, $x * 60, $y * 60, ( $x + 1 ) * 60, ( $y + 1 ) * 60, $colour );
+				// Set the point coordinates.
+				$x1 = 30 + ( $x * 60 );
+				$y1 = 30 + ( $y * 60 );
+				$x2 = 30 + ( ( $x + 1 ) * 60 );
+				$y2 = 30 + ( ( $y + 1 ) * 60 );
+
+				imagefilledrectangle( $image, $x1, $y1, $x2, $y2, $colour );
 			}
 		}
 
