@@ -45,24 +45,6 @@ abstract class Identicon {
 	protected $image;
 
 	/**
-	 * The background colour.
-	 *
-	 * @since 1.1.0
-	 * @access protected
-	 * @var int
-	 */
-	protected $background;
-
-	/**
-	 * The foreground colour.
-	 *
-	 * @since 1.1.0
-	 * @access protected
-	 * @var int
-	 */
-	protected $foreground;
-
-	/**
 	 * Info on the uploads directory.
 	 *
 	 * @since 1.1.0
@@ -220,24 +202,6 @@ final class Pixicon extends Identicon {
 	protected $type = 'pixicon';
 
 	/**
-	 * A 32-character hexadecimal number.
-	 *
-	 * @since 1.1.0
-	 * @access private
-	 * @var string
-	 */
-	private $hash;
-
-	/**
-	 * An array of boolean values.
-	 *
-	 * @since 1.1.0
-	 * @access private
-	 * @var array
-	 */
-	private $data;
-
-	/**
 	 * Set up necessary values.
 	 *
 	 * @since 1.1.0
@@ -251,57 +215,79 @@ final class Pixicon extends Identicon {
 	}
 
 	/**
-	 * Set the background colour.
+	 * Create an identicon.
 	 *
-	 * @since 1.1.1
-	 * @access private
+	 * Build an array of boolean values and use that data to determine if each square in a 5 x 5 grid should be painted.
+	 *
+	 * @since 1.1.0
+	 * @access public
 	 */
-	private function set_background() {
+	function create() {
 
-		// Set the background colour.
-		$this->background = imagecolorallocate( $this->image, '0xee', '0xee', '0xee' );
+		// Bail if an identicon exists.
+		if ( $this->identicon_exists() ) {
+			return;
+		}
+
+		// Calculate the hash of user_login.
+		$hash = md5( $this->user->user_login );
+
+		// Build an array of boolean data from the hash, a 32-character hexadecimal number.
+		$data = array();
+
+		for ( $x = 0; $x < 5; $x++ ) {
+
+			for ( $y = 0; $y < 5; $y++ ) {
+
+				$data[$x][$y] = hexdec( substr( $hash, ( $x * 5 ) + $y + 6, 1 ) ) % 2 === 0;
+			}
+		}
+
+		$this->image = imagecreatetruecolor( BP_AVATAR_FULL_WIDTH, BP_AVATAR_FULL_HEIGHT );
+
+		// Set a grey background.
+		$background = imagecolorallocate( $this->image, '0xee', '0xee', '0xee' );
 
 		if ( get_blog_option( get_current_blog_id(), 'bi-background' ) == 1 ) {
 
-			// Set the background colour to transparent.
-			imagecolortransparent( $this->image, $this->background );
+			// Set a transparent background.
+			imagecolortransparent( $this->image, $background );
 		}
-	}
 
-	/**
-	 * Set the foreground colour.
-	 *
-	 * @since 1.1.1
-	 * @access private
-	 */
-	private function set_foreground() {
-
-		// Get 6 digits from the hash to serve as a hex triplet.
-		$ht = substr( $this->hash, 0, 6 );
+		// Extract 6 digits to serve as a hex triplet.
+		$ht = substr( $hash, 0, 6 );
 
 		// Break into red, green and blue parts.
 		$r = substr( $ht, 0, 2 );
 		$g = substr( $ht, 2, 2 );
 		$b = substr( $ht, 4, 2 );
 
-		$this->foreground = imagecolorallocate( $this->image, '0x' . $r, '0x' . $g, '0x' . $b );
-	}
+		$foreground = imagecolorallocate( $this->image, '0x' . $r, '0x' . $g, '0x' . $b );
 
-	/**
-	 * Paint the image.
-	 *
-	 * @since 1.1.0
-	 * @access private
-	 */
-	private function paint() {
+		imagefill( $this->image, 0, 0, $background );
 
-		imagefill( $this->image, 0, 0, $this->background );
+		// Set the unit values.
+		$x_unit = BP_AVATAR_FULL_WIDTH / 5;
+		$y_unit = BP_AVATAR_FULL_HEIGHT / 5;
+
+		// Set the padding.
+		$x_pad = 0;
+		$y_pad = 0;
+
+		if ( get_blog_option( get_current_blog_id(), 'bi-padding' ) == 1 ) {
+
+			$x_unit = BP_AVATAR_FULL_WIDTH / 6;
+			$y_unit = BP_AVATAR_FULL_HEIGHT / 6;
+
+			$x_pad = $x_unit / 2;
+			$y_pad = $y_unit / 2;
+		}
 
 		for ( $x = 0; $x < 5; $x++ ) {
 
 			for ( $y = 0; $y < 5; $y++ ) {
 
-				$colour = $this->background;
+				$colour = $background;
 
 				switch ( $x ) {
 					case 3:
@@ -316,25 +302,8 @@ final class Pixicon extends Identicon {
 						$z = $x;
 				}
 
-				if ( $this->data[$z][$y] ) {
-					$colour = $this->foreground;
-				}
-
-				// Calculate the unit sizes.
-				$x_unit = BP_AVATAR_FULL_WIDTH / 5;
-				$y_unit = BP_AVATAR_FULL_HEIGHT / 5;
-
-				// Set the padding.
-				$x_pad = 0;
-				$y_pad = 0;
-
-				if ( get_blog_option( get_current_blog_id(), 'bi-padding' ) == 1 ) {
-
-					$x_unit = BP_AVATAR_FULL_WIDTH / 6;
-					$y_unit = BP_AVATAR_FULL_HEIGHT / 6;
-
-					$x_pad = $x_unit / 2;
-					$y_pad = $y_unit / 2;
+				if ( $data[$z][$y] ) {
+					$colour = $foreground;
 				}
 
 				// Set the coordinates.
@@ -346,44 +315,6 @@ final class Pixicon extends Identicon {
 				imagefilledrectangle( $this->image, $x1, $y1, $x2, $y2, $colour );
 			}
 		}
-	}
-
-	/**
-	 * Create an identicon.
-	 *
-	 * Use an array of boolean values to determine if each square in a 5 x 5 grid is painted.
-	 *
-	 * @since 1.1.0
-	 * @access public
-	 */
-	function create() {
-
-		// Bail if an identicon exists.
-		if ( $this->identicon_exists() ) {
-			return;
-		}
-
-		// Calculate the hash.
-		$this->hash = md5( $this->user->user_login );
-
-		$this->data = array();
-
-		// Build an array of boolean data, from the hash.
-		for ( $x = 0; $x < 5; $x++ ) {
-
-			for ( $y = 0; $y < 5; $y++ ) {
-
-				$this->data[$x][$y] = hexdec( substr( $this->hash, ( $x * 5 ) + $y + 6, 1 ) ) % 2 === 0;
-			}
-		}
-
-		$this->image = imagecreatetruecolor( BP_AVATAR_FULL_WIDTH, BP_AVATAR_FULL_HEIGHT );
-
-		$this->set_background();
-
-		$this->set_foreground();
-
-		$this->paint();
 
 		$this->save();
 	}
