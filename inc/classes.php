@@ -251,7 +251,7 @@ final class Pixicon extends Identicon {
 	}
 
 	/**
-	 * Set the background.
+	 * Set the background colour.
 	 *
 	 * @since 1.1.1
 	 * @access private
@@ -269,7 +269,7 @@ final class Pixicon extends Identicon {
 	}
 
 	/**
-	 * Set the foreground.
+	 * Set the foreground colour.
 	 *
 	 * @since 1.1.1
 	 * @access private
@@ -320,9 +320,11 @@ final class Pixicon extends Identicon {
 					$colour = $this->foreground;
 				}
 
+				// Calculate the unit sizes.
 				$x_unit = BP_AVATAR_FULL_WIDTH / 5;
 				$y_unit = BP_AVATAR_FULL_HEIGHT / 5;
 
+				// Set the padding.
 				$x_pad = 0;
 				$y_pad = 0;
 
