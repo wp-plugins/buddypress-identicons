@@ -63,7 +63,7 @@ abstract class Identicon {
 	protected $foreground;
 
 	/**
-	 * Info on the uploads dirrectory.
+	 * Info on the uploads directory.
 	 *
 	 * @since 1.1.0
 	 * @access protected
@@ -208,7 +208,7 @@ abstract class Identicon {
  * @since 1.1.0
  * @access public
  */
-final class Pixicon_Identicon extends Identicon {
+final class Pixicon extends Identicon {
 
 	/**
 	 * The type of identicon.
@@ -251,46 +251,40 @@ final class Pixicon_Identicon extends Identicon {
 	}
 
 	/**
-	 * Build an array of boolean data.
+	 * Set the background.
 	 *
-	 * @since 1.1.0
+	 * @since 1.1.1
 	 * @access private
 	 */
-	private function set_data() {
+	private function set_background() {
 
-		$this->data = array();
+		// Set the background colour.
+		$this->background = imagecolorallocate( $this->image, '0xee', '0xee', '0xee' );
 
-		for ( $x = 0; $x < 5; $x++ ) {
-			for ( $y = 0; $y < 5; $y++ ) {
+		if ( get_blog_option( get_current_blog_id(), 'bi-background' ) == 1 ) {
 
-				$this->data[$x][$y] = hexdec( substr( $this->hash, ( $x * 5 ) + $y + 6, 1 ) ) % 2 === 0;
-			}
+			// Set the background colour to transparent.
+			imagecolortransparent( $this->image, $this->background );
 		}
 	}
 
 	/**
-	 * Set the colours to be used in the image.
+	 * Set the foreground.
 	 *
-	 * @since 1.1.0
+	 * @since 1.1.1
 	 * @access private
 	 */
-	private function set_colours() {
+	private function set_foreground() {
 
-		$hex_triplet = substr( $this->hash, 0, 6 );
+		// Get 6 digits from the hash to serve as a hex triplet.
+		$ht = substr( $this->hash, 0, 6 );
 
 		// Break into red, green and blue parts.
-		$r = substr( $hex_triplet, 0, 2 );
-		$g = substr( $hex_triplet, 2, 2 );
-		$b = substr( $hex_triplet, 4, 2 );
+		$r = substr( $ht, 0, 2 );
+		$g = substr( $ht, 2, 2 );
+		$b = substr( $ht, 4, 2 );
 
 		$this->foreground = imagecolorallocate( $this->image, '0x' . $r, '0x' . $g, '0x' . $b );
-
-		$this->background = imagecolorallocate( $this->image, '0xee', '0xee', '0xee' );
-
-		if ( get_blog_option( get_current_blog_id(), 'bi-background' ) == 1 ) {
-			// Set the background to transparent.
-			imagecolortransparent( $this->image, $this->background );
-		}
 	}
 
 	/**
@@ -301,46 +295,47 @@ final class Pixicon_Identicon extends Identicon {
 	 */
 	private function paint() {
 
-		// Fill the image with the background colour.
 		imagefill( $this->image, 0, 0, $this->background );
 
-		// Paint columns 1 to 5.
 		for ( $x = 0; $x < 5; $x++ ) {
+
 			for ( $y = 0; $y < 5; $y++ ) {
 
 				$colour = $this->background;
 
 				switch ( $x ) {
 					case 3:
-						// To achieve symmetry, column 4 is the same as column 2.
+						// To achieve symmetry, make column 4 the same as column 2.
 						$z = 1;
 						break;
 					case 4:
-						// To achieve symmetry, column 5 is the same as column 1.
+						// To achieve symmetry, make column 5 the same as column 1.
 						$z = 0;
 						break;
 					default:
 						$z = $x;
 				}
 
-				if ( $this->data[$z][$y] )
+				if ( $this->data[$z][$y] ) {
 					$colour = $this->foreground;
+				}
+
+				$x_unit = BP_AVATAR_FULL_WIDTH / 5;
+				$y_unit = BP_AVATAR_FULL_HEIGHT / 5;
+
+				$x_pad = 0;
+				$y_pad = 0;
 
 				if ( get_blog_option( get_current_blog_id(), 'bi-padding' ) == 1 ) {
 
 					$x_unit = BP_AVATAR_FULL_WIDTH / 6;
 					$y_unit = BP_AVATAR_FULL_HEIGHT / 6;
+
 					$x_pad = $x_unit / 2;
 					$y_pad = $y_unit / 2;
-				} else {
-
-					$x_unit = BP_AVATAR_FULL_WIDTH / 5;
-					$y_unit = BP_AVATAR_FULL_HEIGHT / 5;
-					$x_pad = 0;
-					$y_pad = 0;
 				}
 
-				// Set the x and y coordinates for points 1 and 2.
+				// Set the coordinates.
 				$x1 = $x_pad + ( $x * $x_unit );
 				$y1 = $y_pad + ( $y * $y_unit );
 				$x2 = $x_pad + ( ( $x + 1 ) * $x_unit );
@@ -354,7 +349,7 @@ final class Pixicon_Identicon extends Identicon {
 	/**
 	 * Create an identicon.
 	 *
-	 * Build a multidimensional array of boolean values and uses them to determine if each square in a 5 x 5 grid is painted.
+	 * Use an array of boolean values to determine if each square in a 5 x 5 grid is painted.
 	 *
 	 * @since 1.1.0
 	 * @access public
@@ -366,13 +361,25 @@ final class Pixicon_Identicon extends Identicon {
 			return;
 		}
 
+		// Calculate the hash.
 		$this->hash = md5( $this->user->user_login );
+
+		$this->data = array();
+
+		// Build an array of boolean data, from the hash.
+		for ( $x = 0; $x < 5; $x++ ) {
+
+			for ( $y = 0; $y < 5; $y++ ) {
+
+				$this->data[$x][$y] = hexdec( substr( $this->hash, ( $x * 5 ) + $y + 6, 1 ) ) % 2 === 0;
+			}
+		}
 
 		$this->image = imagecreatetruecolor( BP_AVATAR_FULL_WIDTH, BP_AVATAR_FULL_HEIGHT );
 
-		$this->set_data();
+		$this->set_background();
 
-		$this->set_colours();
+		$this->set_foreground();
 
 		$this->paint();
 
@@ -407,7 +414,7 @@ abstract class Identicon_Factory {
 
 		switch( $avatar_default ) {
 			case $pixicon:
-				return new Pixicon_Identicon( $user_id );
+				return new Pixicon( $user_id );
 				break;
 		}
 	}

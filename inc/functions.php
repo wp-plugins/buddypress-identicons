@@ -1,6 +1,6 @@
 <?php
 /**
- * User-defined functions
+ * User defined functions
  *
  * @package BuddyPress Identicons
  * @subpackage Functions
@@ -19,10 +19,11 @@ if ( ! defined( 'ABSPATH' ) )
  */
 function bi_no_grav() {
 
-	if ( bi_usage_check() )
+	if ( bi_usage_check() ) {
 		return true;
-	else
+	} else {
 		return false;
+	}
 }
 add_filter( 'bp_core_fetch_avatar_no_grav', 'bi_no_grav' );
 
@@ -56,8 +57,9 @@ add_filter( 'avatar_defaults', 'bi_avatar_defaults' );
 function bi_default_avatar_url( $bp_core_avatar_default, $params ) {
 
 	// Bail if identicons aren't in use.
-	if ( ! bi_usage_check() )
+	if ( ! bi_usage_check() ) {
 		return $bp_core_avatar_default;
+	}
 
 	$identicon = Identicon_Factory::spawn( $params['item_id'] );
 

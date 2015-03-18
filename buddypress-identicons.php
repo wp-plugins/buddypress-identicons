@@ -7,7 +7,7 @@
  * Author: Henry Wright
  * Author URI: http://about.me/henrywright
  * Text Domain: buddypress-identicons
- * Domain Path: /languages
+ * Domain Path: /languages/
  * License: GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
  */
@@ -66,10 +66,11 @@ add_action( 'plugins_loaded', 'bi_i18n' );
  */
 function bi_buddypress_exists() {
 
-	if ( class_exists( 'BuddyPress' ) )
+	if ( class_exists( 'BuddyPress' ) ) {
 		return true;
-	else
+	} else {
 		return false;
+	}
 }
 add_action( 'plugins_loaded', 'bi_buddypress_exists' );
 
