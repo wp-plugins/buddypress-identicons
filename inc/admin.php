@@ -32,23 +32,9 @@ function bi_register_admin_settings() {
 		'identicons'
 	);
 
-	add_settings_field(
-		'bi-padding',
-		__( 'Padding', 'buddypress-identicons' ),
-		'bi_settings_field_callback_padding',
-		'buddypress',
-		'identicons'
-	);
-
 	register_setting(
 		'buddypress',
 		'bi-background',
-		'intval'
-	);
-
-	register_setting(
-		'buddypress',
-		'bi-padding',
 		'intval'
 	);
 }
@@ -72,19 +58,5 @@ function bi_settings_field_callback_background() {
 	?>
 	<input type="checkbox" name="bi-background" id="bi-background" value="1" <?php checked( $value ); ?> />
 	<label for="bi-background"><?php _e( 'Set background to transparent', 'buddypress-identicons' ); ?></label>
-	<?php
-}
-
-/**
- * Add an input to the field.
- *
- * @since 1.1.0
- */
-function bi_settings_field_callback_padding() {
-
-	$value = get_blog_option( get_current_blog_id(), 'bi-padding', 1 );
-	?>
-	<input type="checkbox" name="bi-padding" id="bi-padding" value="1" <?php checked( $value ); ?> />
-	<label for="bi-padding"><?php _e( 'Add padding to the image', 'buddypress-identicons' ); ?></label>
 	<?php
 }

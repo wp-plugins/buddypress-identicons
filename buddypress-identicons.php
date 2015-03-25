@@ -3,7 +3,7 @@
  * Plugin Name: BuddyPress Identicons
  * Plugin URI: https://github.com/henrywright/buddypress-identicons
  * Description: GitHub-style identicons for your BuddyPress site.
- * Version: 1.1.0
+ * Version: 1.1.1
  * Author: Henry Wright
  * Author URI: http://about.me/henrywright
  * Text Domain: buddypress-identicons
@@ -62,7 +62,7 @@ add_action( 'plugins_loaded', 'bi_i18n' );
  *
  * @since 1.1.0
  *
- * @return bool
+ * @return bool True if BuddyPress is active, false if not.
  */
 function bi_buddypress_exists() {
 
@@ -95,6 +95,8 @@ add_action( 'admin_notices', 'bi_admin_notice' );
  * Check if the plugin is network activated.
  *
  * @since 1.1.0
+ *
+ * @return bool True if network activated, else false.
  */
 function bi_is_network_active() {
 	if ( is_plugin_active_for_network( plugin_basename( __FILE__ ) ) ) {

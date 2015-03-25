@@ -11,6 +11,23 @@ if ( ! defined( 'ABSPATH' ) )
 	exit;
 
 /**
+ * Set up constants.
+ *
+ * @since 1.1.1
+ */
+function bi_constants() {
+
+	if ( ! defined( 'IDENTICON_WIDTH' ) ) {
+		define( 'IDENTICON_WIDTH', 120 );
+	}
+
+	if ( ! defined( 'IDENTICON_HEIGHT' ) ) {
+		define( 'IDENTICON_HEIGHT', 120 );
+	}
+}
+add_action( 'bp_init', 'bi_constants', 3 );
+
+/**
  * Disable Gravatar.
  *
  * @since 1.1.0
@@ -33,7 +50,7 @@ add_filter( 'bp_core_fetch_avatar_no_grav', 'bi_no_grav' );
  * @since 1.1.0
  *
  * @param array $avatar_defaults An array of avatar defaults.
- * @return array
+ * @return array An array of avatar defaults.
  */
 function bi_avatar_defaults( $avatar_defaults ) {
 
@@ -91,6 +108,7 @@ add_action( 'bp_core_deleted_account', 'bi_delete' );
  * Check if identicons are in use.
  *
  * @since 1.1.0
+ *
  * @return bool True if identicons are being used, else false.
  */
 function bi_usage_check() {

@@ -4,7 +4,7 @@ Donate link: https://www.bhf.org.uk/get-involved/donate
 Tags: buddypress, identicons, avatars
 Requires at least: 3.2
 Tested up to: 4.1.1
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -45,18 +45,14 @@ Yes. To set a transparent background go to Settings > BuddyPress and then look f
 
 = Can I change the image size? =
 
-Yes. The image size is determined by constants set in BuddyPress. The default is 150px square but you can change that by adding the following to bp-custom.php
+Yes. The image size is determined by constants. The default is 120px square but you can change that by defining the constants in your bp-custom.php file. For example:
 
-`define ( 'BP_AVATAR_FULL_WIDTH', 150 );
-define ( 'BP_AVATAR_FULL_HEIGHT', 150 );`
+`define ( 'IDENTICON_WIDTH', 180 );
+define ( 'IDENTICON_HEIGHT', 180 );`
 
-Tip: Keep it square and for best results ensure the size used is divisible by 5.
+= Can I change the identicon type? =
 
-= Can I remove the padding around the image? =
-
-Yes. To remove the padding go to Settings > BuddyPress and then look for the option under the Settings tab.
-
-Tip: If you remove padding and choose to set a custom image size, for best results ensure the size used is divisible by 6.
+Yes. To change the identicon type go to Settings > Discussion and select an option under Default Avatar.
 
 = Why is it that some members don't have an identicon? =
 
@@ -74,12 +70,17 @@ If you think you've spotted a bug, please let me know by opening an issue on the
 
 == Changelog ==
 
+= 1.1.1 =
+* Removed padding option.
+* Decreased default image width and height.
+* Minor bug fixes.
+
 = 1.1.0 =
-* Code refactoring.
-* Added option to set a transparent background.
-* Added option to change the image's width and height.
-* Added option to remove the image's padding.
-* Performed tweaks to make the plugin network compatible.
+* Refactored code.
+* Made network compatible.
+* Added transparent background option.
+* Added padding option.
+* Added ability to change width and height.
 * Bug fixes.
 
 = 1.0.2 =

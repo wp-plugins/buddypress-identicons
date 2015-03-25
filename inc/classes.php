@@ -45,6 +45,24 @@ abstract class Identicon {
 	protected $image;
 
 	/**
+	 * The width of the image.
+	 *
+	 * @since 1.1.1
+	 * @access protected
+	 * @var int
+	 */
+	protected $width;
+
+	/**
+	 * The height of the image.
+	 *
+	 * @since 1.1.1
+	 * @access protected
+	 * @var int
+	 */
+	protected $height;
+
+	/**
 	 * Info on the uploads directory.
 	 *
 	 * @since 1.1.0
@@ -71,6 +89,10 @@ abstract class Identicon {
 	 * @param int $user_id The ID of the identicon owner.
 	 */
 	function __construct( $user_id ) {
+
+		$this->width = (int) IDENTICON_WIDTH;
+
+		$this->height = (int) IDENTICON_HEIGHT;
 
 		$this->user = get_userdata( $user_id );
 
@@ -147,7 +169,12 @@ abstract class Identicon {
 	function delete() {
 
 		if ( $this->identicon_exists() ) {
+
+			// Delete the file.
 			@unlink( trailingslashit( $this->upload_dir['basedir'] ) . trailingslashit( self::DIR ) . trailingslashit( $this->user->ID ) . $this->type . '-' . $this->user->user_login . $this->ext );
+
+			// Remove the directory, if empty.
+			@rmdir( trailingslashit( $this->upload_dir['basedir'] ) . trailingslashit( self::DIR ) . $this->user->ID );
 		}
 	}
 
@@ -190,7 +217,7 @@ abstract class Identicon {
  * @since 1.1.0
  * @access public
  */
-final class Pixicon extends Identicon {
+class Pixicon extends Identicon {
 
 	/**
 	 * The type of identicon.
@@ -202,7 +229,7 @@ final class Pixicon extends Identicon {
 	protected $type = 'pixicon';
 
 	/**
-	 * Set up necessary values.
+	 * Set up.
 	 *
 	 * @since 1.1.0
 	 * @access public
@@ -215,9 +242,7 @@ final class Pixicon extends Identicon {
 	}
 
 	/**
-	 * Create an identicon.
-	 *
-	 * Build an array of boolean values and use that data to determine if each square in a 5 x 5 grid should be painted.
+	 * Create a Pixicon.
 	 *
 	 * @since 1.1.0
 	 * @access public
@@ -229,92 +254,105 @@ final class Pixicon extends Identicon {
 			return;
 		}
 
-		// Calculate the hash of user_login.
-		$hash = md5( $this->user->user_login );
+		$str = $this->user->user_login;
 
-		// Build an array of boolean data from the hash, a 32-character hexadecimal number.
+		$hash = md5( $str );
+
 		$data = array();
 
 		for ( $x = 0; $x < 5; $x++ ) {
 
 			for ( $y = 0; $y < 5; $y++ ) {
 
-				$data[$x][$y] = hexdec( substr( $hash, ( $x * 5 ) + $y + 6, 1 ) ) % 2 === 0;
+				$hex = substr( $hash, ( $x * 5 ) + $y + 6, 1 );
+
+				$dec = hexdec( $hex );
+
+				$data[$x][$y] = $dec % 2 === 0;
 			}
 		}
 
-		$this->image = imagecreatetruecolor( BP_AVATAR_FULL_WIDTH, BP_AVATAR_FULL_HEIGHT );
+		$unit_w = $this->width / 6;
 
-		// Set a grey background.
+		$unit_h = $this->height / 6;
+
+		$padding_h = $unit_w / 2;
+
+		$padding_v = $unit_h / 2;
+
+		$this->image = imagecreatetruecolor( $this->width, $this->height );
+
+		$temp = imagecreatetruecolor( $this->width - ( $padding_h * 2 ), $this->height - ( $padding_v * 2 ) );
+
+		$r = substr( $hash, 0, 2 );
+
+		$g = substr( $hash, 2, 2 );
+
+		$b = substr( $hash, 4, 2 );
+
+		$foreground = imagecolorallocate( $this->image, '0x' . $r, '0x' . $g, '0x' . $b );
+
 		$background = imagecolorallocate( $this->image, '0xee', '0xee', '0xee' );
 
 		if ( get_blog_option( get_current_blog_id(), 'bi-background' ) == 1 ) {
 
-			// Set a transparent background.
 			imagecolortransparent( $this->image, $background );
+
+			imagecolortransparent( $temp, $background );
 		}
-
-		// Extract 6 digits to serve as a hex triplet.
-		$ht = substr( $hash, 0, 6 );
-
-		// Break into red, green and blue parts.
-		$r = substr( $ht, 0, 2 );
-		$g = substr( $ht, 2, 2 );
-		$b = substr( $ht, 4, 2 );
-
-		$foreground = imagecolorallocate( $this->image, '0x' . $r, '0x' . $g, '0x' . $b );
 
 		imagefill( $this->image, 0, 0, $background );
-
-		// Set the unit values.
-		$x_unit = BP_AVATAR_FULL_WIDTH / 5;
-		$y_unit = BP_AVATAR_FULL_HEIGHT / 5;
-
-		// Set the padding.
-		$x_pad = 0;
-		$y_pad = 0;
-
-		if ( get_blog_option( get_current_blog_id(), 'bi-padding' ) == 1 ) {
-
-			$x_unit = BP_AVATAR_FULL_WIDTH / 6;
-			$y_unit = BP_AVATAR_FULL_HEIGHT / 6;
-
-			$x_pad = $x_unit / 2;
-			$y_pad = $y_unit / 2;
-		}
 
 		for ( $x = 0; $x < 5; $x++ ) {
 
 			for ( $y = 0; $y < 5; $y++ ) {
 
-				$colour = $background;
-
 				switch ( $x ) {
 					case 3:
-						// To achieve symmetry, make column 4 the same as column 2.
-						$z = 1;
+						$shift = 2;
 						break;
 					case 4:
-						// To achieve symmetry, make column 5 the same as column 1.
-						$z = 0;
+						$shift = 4;
 						break;
 					default:
-						$z = $x;
+						$shift = 0;
 				}
 
-				if ( $data[$z][$y] ) {
-					$colour = $foreground;
+				$color = $background;
+
+				if ( $data[$x - $shift][$y] ) {
+					$color = $foreground;
 				}
 
-				// Set the coordinates.
-				$x1 = $x_pad + ( $x * $x_unit );
-				$y1 = $y_pad + ( $y * $y_unit );
-				$x2 = $x_pad + ( ( $x + 1 ) * $x_unit );
-				$y2 = $y_pad + ( ( $y + 1 ) * $y_unit );
+				$x1 = $x * $unit_w;
 
-				imagefilledrectangle( $this->image, $x1, $y1, $x2, $y2, $colour );
+				$y1 = $y * $unit_h;
+
+				$x2 = ( $x + 1 ) * $unit_w;
+
+				$y2 = ( $y + 1 ) * $unit_h;
+
+				imagefilledrectangle( $temp, $x1, $y1, $x2, $y2, $color );
 			}
 		}
+
+		$dst_im = $this->image;
+
+		$src_im = $temp;
+
+		$dst_x = $padding_h;
+
+		$dst_y = $padding_v;
+
+		$src_x = 0;
+
+		$src_y = 0;
+
+		$src_w = $this->width - ( $padding_h * 2 );
+
+		$src_h = $this->height - ( $padding_v * 2 );
+
+		imagecopy( $dst_im, $src_im, $dst_x, $dst_y, $src_x, $src_y, $src_w, $src_h );
 
 		$this->save();
 	}
@@ -329,14 +367,12 @@ final class Pixicon extends Identicon {
 abstract class Identicon_Factory {
 
 	/**
-	 * A method to create objects.
-	 *
-	 * The value of the avatar_default option determines the object to be created.
+	 * Use the value of avatar_default to determine which object is created.
 	 *
 	 * @since 1.1.0
 	 * @access public
 	 *
-	 * @param string|int $user_id The ID of the identicon owner.
+	 * @param int $user_id The ID of the identicon owner.
 	 * @return object
 	 */
 	static function spawn( $user_id ) {
