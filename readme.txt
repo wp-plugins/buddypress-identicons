@@ -1,10 +1,10 @@
 === BuddyPress Identicons ===
 Contributors: henry.wright
 Donate link: https://www.bhf.org.uk/get-involved/donate
-Tags: buddypress, identicons, avatars
+Tags: buddypress, bbpress, identicons, avatars, users
 Requires at least: 3.2
 Tested up to: 4.1.1
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -69,6 +69,9 @@ If you think you've spotted a bug, please let me know by opening an issue on the
 3. This identicon belongs to lorrainewright
 
 == Changelog ==
+
+= 1.1.2 =
+* Fixed errors associated with file removal on user account deletion.
 
 = 1.1.1 =
 * Removed padding option.

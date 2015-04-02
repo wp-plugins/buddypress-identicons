@@ -14,7 +14,6 @@ if ( ! defined( 'ABSPATH' ) )
  * A class definition detailing an identicon.
  *
  * @since 1.0.0
- * @access public
  */
 abstract class Identicon {
 

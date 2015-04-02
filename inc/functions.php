@@ -102,7 +102,7 @@ function bi_delete( $user_id ) {
 	$identicon->delete();
 }
 add_action( 'delete_user', 'bi_delete' );
-add_action( 'bp_core_deleted_account', 'bi_delete' );
+add_action( 'bp_core_pre_delete_account', 'bi_delete' );
 
 /**
  * Check if identicons are in use.
