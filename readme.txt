@@ -4,7 +4,7 @@ Donate link: https://www.bhf.org.uk/get-involved/donate
 Tags: buddypress, bbpress, identicons, avatars, users
 Requires at least: 3.2
 Tested up to: 4.1.1
-Stable tag: 1.1.2
+Stable tag: 1.1.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -47,8 +47,8 @@ Yes. To set a transparent background go to Settings > BuddyPress and then look f
 
 Yes. The image size is determined by constants. The default is 120px square but you can change that by defining the constants in your bp-custom.php file. For example:
 
-`define ( 'IDENTICON_WIDTH', 180 );
-define ( 'IDENTICON_HEIGHT', 180 );`
+`define( 'IDENTICON_WIDTH', 180 );
+define( 'IDENTICON_HEIGHT', 180 );`
 
 = Can I change the identicon type? =
 
@@ -60,7 +60,7 @@ An identicon is used as a member's avatar only if a profile photo hasn't been up
 
 = Where should I submit bug reports? =
 
-If you think you've spotted a bug, please let me know by opening an issue on the [BuddyPress Identicons](https://github.com/henrywright/buddypress-identicons) GitHub repo.
+If you think you've spotted a bug, please let me know by opening an issue on the [BuddyPress Identicons](https://github.com/henrywright/buddypress-identicons) GitHub page.
 
 == Screenshots ==
 
@@ -69,6 +69,9 @@ If you think you've spotted a bug, please let me know by opening an issue on the
 3. This identicon belongs to lorrainewright
 
 == Changelog ==
+
+= 1.1.3 =
+* Minor bug fixes.
 
 = 1.1.2 =
 * Fixed errors associated with file removal on user account deletion.

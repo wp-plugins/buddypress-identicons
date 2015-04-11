@@ -78,6 +78,12 @@ function bi_default_avatar_url( $bp_core_avatar_default, $params ) {
 		return $bp_core_avatar_default;
 	}
 
+	$user = get_userdata( $params['item_id'] );
+
+	// Bail if the user doesn't exist.
+	if ( ! $user )
+		return plugins_url( 'images/pixicon.png', dirname(__FILE__) );
+
 	$identicon = Identicon_Factory::spawn( $params['item_id'] );
 
 	$identicon->create();
