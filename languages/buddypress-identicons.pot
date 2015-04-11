@@ -1,0 +1,62 @@
+# Copyright (C) 2015 BuddyPress Identicons
+# This file is distributed under the same license as the BuddyPress Identicons package.
+msgid ""
+msgstr ""
+"Project-Id-Version: BuddyPress Identicons 1.1.0\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/support/plugin/buddypress-"
+"identicons\n"
+"POT-Creation-Date: 2015-03-16 00:52:39+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2015-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+
+#: buddypress-identicons.php:86
+msgid "BuddyPress Identicons requires BuddyPress version 1.7 or higher."
+msgstr ""
+
+#: inc/admin.php:22
+msgid "Identicons"
+msgstr ""
+
+#: inc/admin.php:29
+msgid "Background"
+msgstr ""
+
+#: inc/admin.php:37
+msgid "Padding"
+msgstr ""
+
+#: inc/admin.php:74
+msgid "Set background to transparent"
+msgstr ""
+
+#: inc/admin.php:88
+msgid "Add padding to the image"
+msgstr ""
+
+#: inc/functions.php:41
+msgid "Pixicon"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "BuddyPress Identicons"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "https://github.com/henrywright/buddypress-identicons"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "GitHub-style identicons for your BuddyPress site."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Henry Wright"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://about.me/henrywright"
+msgstr ""
